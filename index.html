@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#100d1c" />
+  <meta name="description" content="A fan-made, single-player maze escape adventure: rescue seven friends, outwit seven JYP hunters, and find the exit." />
+  <title>SKZOO Escape</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">✦</div><div><div class="brand-title">SKZOO ESCAPE</div><div class="brand-sub">SEVEN FRIENDS. SEVEN JYP HUNTERS.</div></div></div>
+    <div class="stats" aria-live="polite"><div class="stat"><span class="stat-icon">🗝</span><div><b id="keyCount">0</b><small>KEYS</small></div></div><div class="stat"><span class="stat-icon">✦</span><div><b id="rescuedCount">0/7</b><small>RESCUED</small></div></div><div class="stat"><span class="stat-icon">☠</span><div><b id="monsterCount">1/7</b><small>BEASTS</small></div></div><div class="stat"><span class="stat-icon hearts" id="hearts">♥ ♥ ♥</span><small>HEALTH</small></div></div>
+    <div class="header-actions"><button id="soundBtn" class="icon-btn" type="button" title="Toggle sound" aria-label="Toggle sound">♫</button><button id="mapBtn" class="icon-btn" type="button" title="Map (M)" aria-label="Toggle map">▦</button><button id="pauseBtn" class="icon-btn" type="button" title="Pause (P)" aria-label="Pause">Ⅱ</button></div>
+  </header>
+  <section class="friends-strip" aria-label="Rescue progress">
+    <div class="strip-label">YOUR FRIENDS <span id="progressFraction">0 OF 7 SAFE</span></div>
+    <div id="friendPortraits" class="portrait-list"></div>
+    <div class="strip-end"><span class="little-dot"></span><span id="phaseStatus">FIND THEM IN THE DARK</span></div>
+  </section>
+  <main>
+    <div class="stage" id="stage">
+      <canvas id="gameCanvas" width="1056" height="660" aria-label="2D top-down SKZOO Escape maze game with Wolf Chan avoiding JYP hunters"></canvas>
+      <div class="stage-top"><div class="chapter-tag" id="chapterTag">CHAPTER I <span>·</span> INTO THE HOLLOW</div><div class="objective-tag" id="objectiveTag">FIND KEYS &amp; RESCUE FRIENDS</div></div>
+      <div id="hotbar" class="hotbar" aria-label="Inventory hotbar">
+      <button data-item="boost" class="hotbar-slot empty" type="button" aria-label="Use dash potion (1)"><span class="hotbar-number">1</span><span class="hotbar-icon">⚡</span><span class="hotbar-name">DASH</span><span id="boostCount" class="hotbar-qty">0</span></button>
+      <button data-item="vanish" class="hotbar-slot empty" type="button" aria-label="Use smoke charm (2)"><span class="hotbar-number">2</span><span class="hotbar-icon">☁</span><span class="hotbar-name">SMOKE</span><span id="vanishCount" class="hotbar-qty">0</span></button>
+      <button data-item="radar" class="hotbar-slot empty" type="button" aria-label="Use echo lantern (3)"><span class="hotbar-number">3</span><span class="hotbar-icon">✧</span><span class="hotbar-name">RADAR</span><span id="radarCount" class="hotbar-qty">0</span></button>
+      <div class="hotbar-tip">1–3 to use</div>
+    </div>
+    <div class="stage-bottom"><div class="compass"><span class="compass-arrow" id="targetArrow">➤</span><div><b id="targetLabel">Exploring</b><small id="targetDistance">Follow the passageways</small></div></div><div class="stamina-wrap"><div class="stamina-label"><span>SPRINT</span><span id="staminaPct">100%</span></div><div class="stamina-track"><div class="stamina-fill" id="staminaFill"></div></div></div></div>
+      <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+      <div id="hunterAnnouncement" class="hunter-announcement" role="status" aria-live="assertive" aria-atomic="true">
+        <div class="hunter-warning">☠ NEW HUNTER ☠</div>
+        <div class="hunter-title">A JYP has been dispatched!</div>
+        <div class="hunter-count" id="hunterDispatchCount">2 / 7 JYP hunters active</div>
+      </div>
+      <div class="interaction-hint" id="interactionHint" hidden><span class="keycap">E</span> <span id="interactText">Hold E to unlock</span><div class="unlock-track"><div id="unlockFill" class="unlock-fill"></div></div></div>
+      <div id="mapLegend" class="map-legend" hidden>YOU <span>●</span> &nbsp; DISCOVERED PATHS <span>·</span> &nbsp; CAGES <span>◆</span></div>
+      <div class="overlay visible" id="menuOverlay">
+        <div class="menu-card"><span class="eyebrow">SEVEN FRIENDS ARE WAITING FOR YOU</span><h1>SKZOO<br><em>ESCAPE</em></h1><p>Seven friends. Seven cages. Seven keys.<br>JYP is here. And every rescue awakens another hunter.</p>
+          <div class="hero-preview"><img src="assets/faces/wolf_chan.png" alt="Wolf Chan"/><div class="preview-friend"><img src="assets/faces/leebit.png" alt="Leebit"/><img src="assets/faces/dwaekki.png" alt="Dwaekki"/><img src="assets/faces/jiniret.png" alt="Jiniret"/><img src="assets/faces/han_quokka.png" alt="Han Quokka"/><img src="assets/faces/bbokari.png" alt="BbokAri"/><img src="assets/faces/puppym.png" alt="PuppyM"/><img src="assets/faces/foxiny.png" alt="FoxI.Ny"/></div></div>
+          <div class="difficulty-field"><span>DIFFICULTY</span><div class="difficulty-controls"><button class="difficulty active" data-mode="explorer" type="button">Explorer</button><button class="difficulty" data-mode="normal" type="button">Brave</button><button class="difficulty" data-mode="nightmare" type="button">Nightmare</button></div></div>
+          <button id="startBtn" class="primary-btn" type="button">ENTER THE MAZE <span>→</span></button><div class="menu-shortcuts">WASD / ARROWS <b>move</b> &nbsp; SHIFT <b>sprint</b> &nbsp; HOLD E <b>unlock</b> &nbsp; 1–3 <b>items</b></div>
+        </div>
+      </div>
+      <div class="overlay" id="pauseOverlay"><div class="dialog"><span class="eyebrow">A MOMENT OF QUIET</span><h2>PAUSED</h2><p>The JYP hunters are waiting in the dark.</p><button class="primary-btn" id="resumeBtn" type="button">KEEP GOING →</button><button class="secondary-btn" id="restartPauseBtn" type="button">Restart this maze</button></div></div>
+      <div class="overlay" id="endOverlay"><div class="end-card"><span class="eyebrow" id="endEyebrow">THE END</span><h2 id="endTitle">YOU ESCAPED!</h2><p id="endDescription">Your friends are safe.</p><div id="endCharacters" class="end-characters"></div><div class="end-stats" id="endStats"></div><button class="primary-btn" id="restartEndBtn" type="button">PLAY AGAIN ↻</button></div></div>
+    </div>
+  </main>
+  <section class="field-notes"><strong>FIELD NOTES</strong><span>🗝 Collect keys first, then <b>hold E to unlock</b> by a cage</span><span>▣ Mystery crates can help or hurt</span><span>☠ One JYP hunter joins per rescue (up to seven) · rescued friends may throw ice cream to stun one</span></section>
+  <section id="mobileControls" class="mobile-controls" aria-label="Touch game controls"><div class="dpad"><button data-direction="up" type="button">▲</button><div><button data-direction="left" type="button">◀</button><button data-direction="down" type="button">▼</button><button data-direction="right" type="button">▶</button></div></div><div class="mobile-buttons"><button id="touchSprint" type="button">RUN</button><button id="touchAction" type="button">HOLD TO FREE</button></div></section>
+  <footer>AN UNOFFICIAL FAN-MADE SKZOO ADVENTURE · YOUR ADVENTURE IS RANDOMIZED EACH ROUND <span>✦</span> MADE TO PLAY IN A BROWSER</footer>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
